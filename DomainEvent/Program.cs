@@ -1,23 +1,19 @@
 using System.Net.NetworkInformation;
 using System.Reflection;
 using DomainEvent;
+using DomainEvent.EventsHandlers;
+using IDomainEvent = DomainEvent.EventsHandlers.IDomainEvent;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IDispatchDomainEvents, DispatchDomainEvents>();
-//builder.Services.AddTransient<AuthorAddedHandler>();
-//builder.Services.AddTransient<AuthorAddedHandler.AuthorUpdatedHandler>();
+builder.Services.AddScoped<IDomainEvent, DomainEvent.EventsHandlers.DomainEvent>();
 
-// Регистрация сервиса для отправки доменных событий
-//builder.Services.AddTransient<DispatchDomainEvents>();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(AuthorAddedHandler).Assembly));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateAuthorCommand).Assembly));
 
 
 

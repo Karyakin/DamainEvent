@@ -1,3 +1,5 @@
+using DomainEvent.EventsHandlers;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DomainEvent.Controllers;
@@ -6,24 +8,25 @@ namespace DomainEvent.Controllers;
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
 {
-    
-    private readonly IDispatchDomainEvents _dispatchDomainEvents;
-
-    public WeatherForecastController(IDispatchDomainEvents dispatchDomainEvents)
+    private readonly IMediator _mediator;
+    public WeatherForecastController(IMediator mediator)
     {
-        _dispatchDomainEvents = dispatchDomainEvents;
+        _mediator = mediator;
     }
 
-    [HttpGet(Name = "GetWeatherForecast")]
-    public async Task<IActionResult> Get()
+    [HttpGet("Create")]
+    public async Task<IActionResult> Create()
     {
-        var author = Author.Create("John Doe");
-        await _dispatchDomainEvents.DispatchAsync(author);
-
-        author.UpdateName("Jane Doe");
-        await _dispatchDomainEvents.DispatchAsync(author);
+       var rez = await _mediator.Send(new CreateAuthorCommand("Dima", "developer"));
         
-        //Thread.Sleep(2000);
-        return Ok();
+        return Ok(rez);
+    }
+    
+    [HttpGet("Change")]
+    public async Task<IActionResult> Change()
+    {
+        var rez = await _mediator.Send(new ChangeAuthorCommand());
+        
+        return Ok(rez);
     }
 }
