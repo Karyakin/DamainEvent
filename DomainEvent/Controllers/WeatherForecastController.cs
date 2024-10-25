@@ -30,3 +30,5 @@ public class WeatherForecastController : ControllerBase
         return Ok(rez);
     }
 }
+
+//http://localhost:5223/swagger/index.html
